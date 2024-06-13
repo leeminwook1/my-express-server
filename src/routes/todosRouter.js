@@ -55,8 +55,11 @@ router.put("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
+
   try {
-    if (req.user._id.toString() !== req.user._id.toString()) {
+    const todo = await Todo.findById(id);
+
+    if (todo.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ error: "Permission denied" });
     }
     const deletedTodo = await Todo.findByIdAndDelete(id);
