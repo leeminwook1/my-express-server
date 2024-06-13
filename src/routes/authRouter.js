@@ -36,7 +36,6 @@ router.post("/join", async (req, res) => {
   const { username, age, password } = req.body;
   try {
     const user = await User.findOne({ username });
-    console.log(user);
     if (user) {
       return res.status(409).json({ message: "User already exists" });
     }
