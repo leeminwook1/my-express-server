@@ -71,16 +71,24 @@ router.put("/change-password", async (req, res) => {
   }
 });
 
-router.delete("/delete-account", (req, res) => {
-  const index = users.findIndex(
-    (user) => user.id === req.session.passport.user
-  );
-  if (index === -1) {
-    return res.status(404).json({ message: "Account not found" });
+router.delete("/delete-account", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.user.username });
+    if (!user) {
+      return res.status(401).json({ message: "Authenticaiton failed" });
+    }
+    await User.deleteOne({ username: req.user.username });
+
+    req.logout((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Logout failed" });
+      }
+    });
+
+    res.status(200).json({ message: "Account deleted successfully" });
+  } catch (err) {
+    res.status(500).send("Internal server error");
   }
-  users.splice(index, 1);
-  req.logout();
-  res.status(200).json({ message: "Account deleted successfully" });
 });
 
 export default router;
