@@ -4,6 +4,7 @@ import Todo from "../models/Todo.js";
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  console.log("todos 들어왔다");
   try {
     const todos = await Todo.find({ userId: req.user._id });
     res.status(200).json(todos);
